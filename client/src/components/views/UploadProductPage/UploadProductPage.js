@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Typography, Button, Form, Input } from "antd";
-
+import FileUpload from "../../utils/FileUpload";
 const { TextArea } = Input;
 
 const Continents = [
@@ -40,6 +40,9 @@ function UploadProductPage() {
 
       <Form>
         {/* DropZone */}
+
+        <FileUpload />
+
         <br />
         <br />
         <label>이름</label>
@@ -54,6 +57,8 @@ function UploadProductPage() {
         <Input type="number" onChange={priceChangeHandler} value={Price} />
         <br />
         <br />
+        {/* option은 7번 나열해야될거 map메소드 이용 */}
+        {/* select도 onChange Event이용해서 value를 선택가능 */}
         <select onChange={continentChangeHandler} value={Continent}>
           {Continents.map((item) => (
             <option key={item.key} value={item.key}>

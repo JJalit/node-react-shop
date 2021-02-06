@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const multer = require("multer");
+const { Product } = require("../models/Product");
 //=================================
 //             Products
 //=================================
@@ -30,6 +31,17 @@ router.post("/image", (req, res) => {
         fileName: res.req.file.filename,
       }); //저장 성공시 filePath, fileName을 frontend로 보냄
     }
+  });
+});
+
+router.post("/", (req, res) => {
+  //받은 이미지를 DB에 저장을 해줌.
+  // Product model에 받은 body를 넣어 새로운 객체를 만든다.
+  const product = new Product(req.body);
+
+  product.save((err) => {
+    if (err) return res.status(400).json({ success: false, err });
+    return res.status(200).json({ success: true });
   });
 });
 

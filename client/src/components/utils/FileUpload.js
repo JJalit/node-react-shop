@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import Dropzone from "react-dropzone";
-import { Icon } from "antd";
+import { PlusOutlined } from "@ant-design/icons";
+
 import axios from "axios";
-function FileUpload() {
+function FileUpload(props) {
   const [Images, setImages] = useState([]); // array로 하는이유는 여러개를 넣어주려고
 
   const dropHandler = (files) => {
@@ -19,11 +20,23 @@ function FileUpload() {
       .then((response) => {
         if (response.data.success) {
           setImages([...Images, response.data.filePath]); //...연산자는 값의 모든 값을 나타냄
+          props.refreshFunction([...Images, response.data.filePath]);
         } else {
           //실패시
           alert("파일을 저장하는데 실패했습니다.");
         }
       });
+  };
+
+  // 삭제하는 방법
+  // ---중간만 삭제하는 방법 구상하기---
+  const deleteHandler = (image) => {
+    const currentIndex = Images.indexOf(image);
+
+    let newImages = [...Images];
+    newImages.splice(currentIndex, 1);
+    setImages(newImages);
+    props.refreshFunction(newImages);
   };
 
   return (
@@ -45,7 +58,7 @@ function FileUpload() {
             {...getRootProps()}
           >
             <input {...getInputProps()} />
-            <Icon type="plus" style={{ fontSize: "3rem" }} />
+            <PlusOutlined />
           </div>
         )}
       </Dropzone>
@@ -59,7 +72,7 @@ function FileUpload() {
       >
         {/* Images에 있는 response.data.filepath의 것들을 map으로 나열 */}
         {Images.map((image, index) => (
-          <div key={index}>
+          <div onClick={() => deleteHandler()} key={index}>
             <img
               style={{ minWidth: "300px", width: "300px", height: "220px" }}
               src={`http://localhost:5000/${image}`}

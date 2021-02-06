@@ -3,13 +3,16 @@ const Schema = mongoose.Schema;
 
 const productSchema = mongoose.Schema(
   {
-    wrtier: {
+    writer: {
       type: Schema.Types.ObjectId,
       ref: "User",
     },
     title: {
       type: String,
       maxlength: 50,
+    },
+    description: {
+      type: String,
     },
     price: {
       type: Number,
@@ -19,15 +22,17 @@ const productSchema = mongoose.Schema(
       type: Array,
       default: [],
     },
-    continents: {
-      type: Number,
-      default: 1,
-    },
     sold: {
       type: Number,
       maxlength: 100,
       default: 0,
     },
+
+    continents: {
+      type: Number,
+      default: 1,
+    },
+
     views: {
       type: Number,
       default: 0,

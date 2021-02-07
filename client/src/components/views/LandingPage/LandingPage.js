@@ -1,37 +1,58 @@
 import React, { useEffect, useState } from "react";
 import { FaCode } from "react-icons/fa";
-import { Col, Card, Row } from "antd";
+import { Col, Card, Row, Carousel } from "antd";
 import { RocketOutlined } from "@ant-design/icons";
-
+import ImageSlider from "../../utils/ImageSlider";
 import axios from "axios";
 function LandingPage() {
   const { Meta } = Card;
 
   const [Products, setProducts] = useState([]);
-
+  const [Skip, setSkip] = useState(0);
+  const [Limit, setLimit] = useState(8);
+  const [PostSize, setPostSize] = useState(0);
   useEffect(() => {
+    let body = {
+      skip: Skip,
+      limit: Limit,
+    };
     // 정석은 get인데 여기서는 post를 씀
-    axios.post("/api/product/products").then((response) => {
+    // body에 skip과 limit을 같이 보냄
+    getProducts(body);
+  }, []);
+
+  const getProducts = (body) => {
+    axios.post("/api/product/products", body).then((response) => {
       if (response.data.success) {
-        console.log(response.data);
-        setProducts(response.data.productInfo);
+        if (body.loadMore) {
+          setProducts([...Products, ...response.data.productInfo]);
+        } else {
+          setProducts(response.data.productInfo);
+        }
+        setPostSize(response.data.postSize);
       } else {
         alert("상품들을 가져오는데 실패 했습니다.");
       }
     });
-  }, []);
+  };
+
+  const loadMoreHandler = () => {
+    let skip = Skip + Limit;
+
+    let body = {
+      skip: skip,
+      limit: Limit,
+      loadMore: true,
+    };
+
+    getProducts(body);
+    setSkip(skip);
+  };
 
   const renderCards = Products.map((product, index) => {
     return (
       <Col lg={6} md={8} xs={24} key={index}>
-        <Card
-          cover={
-            <img
-              sytle={{ width: "100%", maxHeight: "150px" }}
-              src={`http://localhost:5000/${product.images[0]}`}
-            />
-          }
-        >
+        <Card hoverable cover={<ImageSlider images={product.images} />}>
           <Meta title={product.title} description={`$${product.price}`} />
         </Card>
       </Col>
@@ -52,6 +73,14 @@ function LandingPage() {
 
       {/* Cards */}
       <Row gutter={[16, 16]}>{renderCards}</Row>
+
+      <br />
+
+      {PostSize >= Limit && (
+        <div style={{ display: "flex", justifyContent: "center" }}>
+          <button onClick={loadMoreHandler}>더보기</button>
+        </div>
+      )}
     </div>
   );
 }

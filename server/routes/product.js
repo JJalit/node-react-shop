@@ -48,12 +48,20 @@ router.post("/", (req, res) => {
 router.post("/products", (req, res) => {
   // Product collection에 들어 있는 모든 상품 정보를 가져오기
 
+  // 요청받은 body의 limit property로 접근
+  let limit = req.body.limit ? parseInt(req.body.limit) : 12;
+  let skip = req.body.skip ? parseInt(req.body.skip) : 0;
+
   Product.find()
     .populate("writer") //writer안에 있는 정보를 다 가져옴
+    .skip(skip)
+    .limit(limit)
     .exec((err, productInfo) => {
       //product info에는 DB에서 가져온 정보가 들어있음
       if (err) return res.status(400).json({ success: false, err });
-      return res.status(200).json({ success: true, productInfo });
+      return res
+        .status(200)
+        .json({ success: true, productInfo, postSize: productInfo.length });
     });
 });
 

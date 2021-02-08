@@ -56,10 +56,18 @@ router.post("/products", (req, res) => {
 
   for (let key in req.body.filters) {
     if (req.body.filters[key].length > 0) {
-      findArgs[key] = req.body.filters[key];
+      if (key === "price") {
+        findArgs[key] = {
+          //Greater than equal
+          $gte: req.body.filters[key][0],
+          //Less than equal
+          $lte: req.body.filters[key][1],
+        };
+      } else {
+        findArgs[key] = req.body.filters[key];
+      }
     }
   }
-
   Product.find(findArgs)
     .populate("writer") //writer안에 있는 정보를 다 가져옴
     .skip(skip)

@@ -4,8 +4,9 @@ import { Col, Card, Row } from "antd";
 import { RocketOutlined } from "@ant-design/icons";
 import ImageSlider from "../../utils/ImageSlider";
 import axios from "axios";
-import { continents } from "./Sections/Datas";
+import { continents, price } from "./Sections/Datas";
 import Checkbox from "./Sections/CheckBox";
+import Radiobox from "./Sections/RadioBox";
 function LandingPage() {
   const { Meta } = Card;
 
@@ -76,11 +77,31 @@ function LandingPage() {
     setSkip(0);
   };
 
+  const handlePrice = (value) => {
+    const data = price;
+    let array = [];
+
+    for (let key in data) {
+      if (data[key]._id === parseInt(value, 10)) {
+        array = data[key].array;
+      }
+    }
+    return array;
+  };
+
   const handleFilters = (filters, category) => {
     const newFilters = { ...Filters };
     newFilters[category] = filters;
 
+    console.log("Filters", filters);
+
+    if (category === "price") {
+      let priceValues = handlePrice(filters);
+      newFilters[category] = priceValues;
+    }
+
     showFilteredResults(newFilters);
+    setFilters(newFilters);
   };
 
   return (
@@ -92,14 +113,22 @@ function LandingPage() {
       </div>
 
       {/* filter */}
-
-      {/* CheckBox */}
-      <Checkbox
-        list={continents}
-        handleFilters={(filters) => handleFilters(filters, "continents")}
-      />
-
-      {/* RadioBox */}
+      <Row gutter={[16, 16]}>
+        <Col lg={12} xs={24}>
+          {/* CheckBox */}
+          <Checkbox
+            list={continents}
+            handleFilters={(filters) => handleFilters(filters, "continents")}
+          />
+        </Col>
+        <Col lg={12} xs={24}>
+          {/* RadioBox */}
+          <Radiobox
+            list={price}
+            handleFilters={(filters) => handleFilters(filters, "price")}
+          />
+        </Col>
+      </Row>
 
       {/* Search */}
 

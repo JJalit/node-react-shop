@@ -52,7 +52,15 @@ router.post("/products", (req, res) => {
   let limit = req.body.limit ? parseInt(req.body.limit) : 12;
   let skip = req.body.skip ? parseInt(req.body.skip) : 0;
 
-  Product.find()
+  let findArgs = {};
+
+  for (let key in req.body.filters) {
+    if (req.body.filters[key].length > 0) {
+      findArgs[key] = req.body.filters[key];
+    }
+  }
+
+  Product.find(findArgs)
     .populate("writer") //writer안에 있는 정보를 다 가져옴
     .skip(skip)
     .limit(limit)

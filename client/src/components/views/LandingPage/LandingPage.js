@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { FaCode } from "react-icons/fa";
-import { Col, Card, Row, Carousel } from "antd";
+import { Col, Card, Row } from "antd";
 import { RocketOutlined } from "@ant-design/icons";
 import ImageSlider from "../../utils/ImageSlider";
 import axios from "axios";
+import { continents } from "./Sections/Datas";
+import Checkbox from "./Sections/CheckBox";
 function LandingPage() {
   const { Meta } = Card;
 
@@ -11,6 +13,10 @@ function LandingPage() {
   const [Skip, setSkip] = useState(0);
   const [Limit, setLimit] = useState(8);
   const [PostSize, setPostSize] = useState(0);
+  const [Filters, setFilters] = useState({
+    continents: [],
+    price: [],
+  });
   useEffect(() => {
     let body = {
       skip: Skip,
@@ -59,6 +65,24 @@ function LandingPage() {
     );
   });
 
+  const showFilteredResults = (filters) => {
+    let body = {
+      skip: 0,
+      limit: Limit,
+      filters: filters,
+    };
+
+    getProducts(body);
+    setSkip(0);
+  };
+
+  const handleFilters = (filters, category) => {
+    const newFilters = { ...Filters };
+    newFilters[category] = filters;
+
+    showFilteredResults(newFilters);
+  };
+
   return (
     <div style={{ width: "75%", margin: "3rem auto" }}>
       <div style={{ textAlign: "center" }}>
@@ -69,9 +93,18 @@ function LandingPage() {
 
       {/* filter */}
 
+      {/* CheckBox */}
+      <Checkbox
+        list={continents}
+        handleFilters={(filters) => handleFilters(filters, "continents")}
+      />
+
+      {/* RadioBox */}
+
       {/* Search */}
 
       {/* Cards */}
+      <br />
       <Row gutter={[16, 16]}>{renderCards}</Row>
 
       <br />

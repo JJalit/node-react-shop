@@ -51,7 +51,7 @@ router.post("/products", (req, res) => {
   // 요청받은 body의 limit property로 접근
   let limit = req.body.limit ? parseInt(req.body.limit) : 12;
   let skip = req.body.skip ? parseInt(req.body.skip) : 0;
-
+  let term = req.body.searchTerm;
   let findArgs = {};
 
   for (let key in req.body.filters) {
@@ -68,17 +68,33 @@ router.post("/products", (req, res) => {
       }
     }
   }
-  Product.find(findArgs)
-    .populate("writer") //writer안에 있는 정보를 다 가져옴
-    .skip(skip)
-    .limit(limit)
-    .exec((err, productInfo) => {
-      //product info에는 DB에서 가져온 정보가 들어있음
-      if (err) return res.status(400).json({ success: false, err });
-      return res
-        .status(200)
-        .json({ success: true, productInfo, postSize: productInfo.length });
-    });
+
+  if (term) {
+    Product.find(findArgs)
+      .find({ title: { $regex: term } })
+      .populate("writer") //writer안에 있는 정보를 다 가져옴
+      .skip(skip)
+      .limit(limit)
+      .exec((err, productInfo) => {
+        //product info에는 DB에서 가져온 정보가 들어있음
+        if (err) return res.status(400).json({ success: false, err });
+        return res
+          .status(200)
+          .json({ success: true, productInfo, postSize: productInfo.length });
+      });
+  } else {
+    Product.find(findArgs)
+      .populate("writer") //writer안에 있는 정보를 다 가져옴
+      .skip(skip)
+      .limit(limit)
+      .exec((err, productInfo) => {
+        //product info에는 DB에서 가져온 정보가 들어있음
+        if (err) return res.status(400).json({ success: false, err });
+        return res
+          .status(200)
+          .json({ success: true, productInfo, postSize: productInfo.length });
+      });
+  }
 });
 
 module.exports = router;

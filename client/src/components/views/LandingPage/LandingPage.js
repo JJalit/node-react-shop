@@ -7,6 +7,7 @@ import axios from "axios";
 import { continents, price } from "./Sections/Datas";
 import Checkbox from "./Sections/CheckBox";
 import Radiobox from "./Sections/RadioBox";
+import SearchFeature from "./Sections/SearchFeature";
 function LandingPage() {
   const { Meta } = Card;
 
@@ -18,6 +19,8 @@ function LandingPage() {
     continents: [],
     price: [],
   });
+  const [SearchTerm, setSearchTerm] = useState("");
+
   useEffect(() => {
     let body = {
       skip: Skip,
@@ -104,6 +107,18 @@ function LandingPage() {
     setFilters(newFilters);
   };
 
+  const updateSearchTerm = (newSearchTerm) => {
+    let body = {
+      skip: 0,
+      limit: Limit,
+      filters: Filters,
+      searchTerm: newSearchTerm,
+    };
+    setSkip(0);
+    setSearchTerm(newSearchTerm);
+    getProducts(body);
+  };
+
   return (
     <div style={{ width: "75%", margin: "3rem auto" }}>
       <div style={{ textAlign: "center" }}>
@@ -131,7 +146,16 @@ function LandingPage() {
       </Row>
 
       {/* Search */}
-
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "flex-end",
+          margin: "1rem atuo",
+          paddingTop: "15px",
+        }}
+      >
+        <SearchFeature refreshFunction={updateSearchTerm} />
+      </div>
       {/* Cards */}
       <br />
       <Row gutter={[16, 16]}>{renderCards}</Row>

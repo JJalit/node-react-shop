@@ -1,4 +1,4 @@
-@import '~antd/dist/antd.css';
+@import "~antd/dist/antd.css";
 
 .menu {
   padding: 0 20px;
@@ -40,7 +40,7 @@
   float: left;
 }
 
-.menu__container .menu_rigth {
+.menu__container .menu_right {
   float: right;
 }
 
@@ -68,7 +68,7 @@
   }
 
   .menu_left,
-  .menu_rigth {
+  .menu_right {
     display: none;
   }
 
@@ -84,4 +84,8 @@
   .menu__logo a {
     padding: 10px 20px;
   }
+}
+
+.menu__container {
+  padding-top: 11.8px;
 }

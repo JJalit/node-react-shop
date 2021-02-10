@@ -2,12 +2,14 @@ import React from "react";
 import { Button, Descriptions } from "antd";
 import { useDispatch } from "react-redux";
 import { addToCart } from "../../../../_actions/user_actions";
+import { withRouter } from "react-router-dom";
 function ProductInfo(props) {
   const dispatch = useDispatch();
 
   const clickHandler = () => {
     //필요한 정보를 Cart 필드에다가 넣어준다.
     dispatch(addToCart(props.detail._id));
+    props.history.push("/");
   };
 
   return (
@@ -34,4 +36,4 @@ function ProductInfo(props) {
   );
 }
 
-export default ProductInfo;
+export default withRouter(ProductInfo);

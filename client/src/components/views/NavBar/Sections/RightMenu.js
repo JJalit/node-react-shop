@@ -42,7 +42,7 @@ function RightMenu(props) {
             <a
               href="/user/cart"
               className="head-example"
-              style={{ marginRight: -22, color: "#667777" }}
+              style={{ marginRight: -22 }}
             >
               {" "}
               <ShoppingCartOutlined

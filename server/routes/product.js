@@ -95,29 +95,29 @@ router.post("/products", (req, res) => {
           .json({ success: true, productInfo, postSize: productInfo.length });
       });
   }
+});
 
-  router.get("/products_by_id", (req, res) => {
-    let type = req.query.type;
-    let productIds = req.query.id;
+router.get("/products_by_id", (req, res) => {
+  let type = req.query.type;
+  let productIds = req.query.id;
 
-    if (type === "array") {
-      //id=123123123,32323232,141414141414 이거를
-      //productIds = ['123123123','32323232','141414141414'] 이런식으로 바꿔주기
-      let ids = req.query.id.split(",");
-      productIds = ids.map((item) => {
-        return item;
-      });
-    }
+  if (type === "array") {
+    //id=123123123,32323232,141414141414 이거를
+    //productIds = ['123123123','32323232','141414141414'] 이런식으로 바꿔주기
+    let ids = req.query.id.split(",");
+    productIds = ids.map((item) => {
+      return item;
+    });
+  }
 
-    //productId를 이용해서 DB에서 productId와 같은 상품의 정보를 가져온다.
+  //productId를 이용해서 DB에서 productId와 같은 상품의 정보를 가져온다.
 
-    Product.find({ _id: { $in: productIds } })
-      .populate("writer")
-      .exec((err, product) => {
-        if (err) return res.status(400).send(err);
-        return res.status(200).send(product);
-      });
-  });
+  Product.find({ _id: { $in: productIds } })
+    .populate("writer")
+    .exec((err, product) => {
+      if (err) return res.status(400).send(err);
+      return res.status(200).send(product);
+    });
 });
 
 module.exports = router;
